@@ -24,7 +24,10 @@ type User struct {
 }
 
 type UserData struct {
-	User              User       `json:"user"`
+	User struct {
+		User
+		Introduction string `json:"introduction"`
+	} `json:"user"`
 	EloMax            struct{}   `json:"eloMax"`
 	PassedProblems    []struct{} `json:"passedProblems"`
 	SubmittedProblems []struct{} `json:"submittedProblems"`
