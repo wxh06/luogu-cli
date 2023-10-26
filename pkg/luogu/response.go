@@ -1,7 +1,5 @@
 package luogu
 
-import "github.com/charmbracelet/glamour"
-
 // https://github.com/0f-0b/luogu-api-docs/blob/main/luogu-api.d.ts
 
 type DataResponse[T any] struct {
@@ -48,7 +46,7 @@ type UserDetails struct {
 }
 
 func (u UserDetails) RenderIntroduction(style string) (string, error) {
-	return glamour.Render(u.Introduction, style)
+	return renderMarkdown(u.Introduction, style)
 }
 
 type UserData struct {
