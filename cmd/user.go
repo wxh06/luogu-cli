@@ -22,8 +22,6 @@ import (
 	"github.com/wxh06/luogu-cli/pkg/luogu"
 )
 
-var style string
-
 // userCmd represents the user command
 var userCmd = &cobra.Command{
 	Use:   "user",
@@ -35,6 +33,11 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
+		style, err := cmd.Flags().GetString("style")
+		if err != nil {
+			return
+		}
+
 		data, err := luogu.Request[luogu.UserData]("GET", "https://www.luogu.com.cn/user/"+args[0], nil)
 		if err != nil {
 			return
@@ -62,5 +65,4 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	userCmd.Flags().StringVarP(&style, "style", "s", "notty", "Markdown style")
 }
