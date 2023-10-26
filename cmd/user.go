@@ -18,7 +18,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 	"github.com/wxh06/luogu-cli/pkg/luogu"
 )
@@ -42,7 +41,7 @@ to quickly create a Cobra application.`,
 		}
 
 		fmt.Println(data.CurrentData.User.Name)
-		introduction, err := glamour.Render(data.CurrentData.User.Introduction, style)
+		introduction, err := data.CurrentData.User.RenderIntroduction(style)
 		if err != nil {
 			return
 		}

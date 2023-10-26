@@ -1,5 +1,7 @@
 package luogu
 
+import "github.com/charmbracelet/glamour"
+
 // https://github.com/0f-0b/luogu-api-docs/blob/main/luogu-api.d.ts
 
 type DataResponse[T any] struct {
@@ -9,9 +11,10 @@ type DataResponse[T any] struct {
 	CurrentTitle    string `json:"currentTitle"`
 	CurrentTheme    string `json:"currentTheme"`
 	CurrentTime     int    `json:"currentTime"`
+	CurrentUser     User   `json:"currentUser"`
 }
 
-type User struct {
+type UserSummary struct {
 	Uid        int    `json:"uid"`
 	Name       string `json:"name"`
 	Slogan     string `json:"slogan"`
@@ -23,12 +26,34 @@ type User struct {
 	Background string `json:"background"`
 }
 
+type User struct {
+	FollowingCount int    `json:"followingCount"`
+	FollowerCount  int    `json:"followerCount"`
+	Ranking        int    `json:"ranking"`
+	EloValue       int    `json:"eloValue"`
+	BlogAddress    string `json:"blogAddress"`
+	UserSummary
+}
+
+type UserDetails struct {
+	RegisterTime int    `json:"registerTime"`
+	Introduction string `json:"introduction"`
+	Prize        []struct {
+		Year        int    `json:"year"`
+		ContestName string `json:"contestName"`
+		Prize       string `json:"prize"`
+	} `json:"prize"`
+	Elo struct{} `json:"elo"`
+	User
+}
+
+func (u UserDetails) RenderIntroduction(style string) (string, error) {
+	return glamour.Render(u.Introduction, style)
+}
+
 type UserData struct {
-	User struct {
-		User
-		Introduction string `json:"introduction"`
-	} `json:"user"`
-	EloMax            struct{}   `json:"eloMax"`
-	PassedProblems    []struct{} `json:"passedProblems"`
-	SubmittedProblems []struct{} `json:"submittedProblems"`
+	User              UserDetails `json:"user"`
+	EloMax            struct{}    `json:"eloMax"`
+	PassedProblems    []struct{}  `json:"passedProblems"`
+	SubmittedProblems []struct{}  `json:"submittedProblems"`
 }
