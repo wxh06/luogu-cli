@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func Request[T any](method, url string, payload any) (data DataResponse[T], err error) {
+func Request[T any](method, url string, payload any) (data T, err error) {
 	reqBody := new(bytes.Buffer)
 	if payload != nil {
 		err = json.NewEncoder(reqBody).Encode(payload)

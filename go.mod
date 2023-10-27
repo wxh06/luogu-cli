@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/charmbracelet/glamour v0.6.0
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.7.1-0.20231027102345-8b1eba476165
 	github.com/spf13/viper v1.17.0
 )
 

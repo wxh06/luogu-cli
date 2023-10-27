@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -37,6 +38,10 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			panic(err)
 		}
+		username, err := cmd.Flags().GetString("name")
+		if err != nil {
+			panic(err)
+		}
 		style, err := cmd.Flags().GetString("style")
 		if err != nil {
 			panic(err)
@@ -46,13 +51,28 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 
-		data, err := luogu.Request[luogu.UserData]("GET", fmt.Sprintf("https://www.luogu.com.cn/user/%d", uid), nil)
+		if uid == 0 {
+			data, err := luogu.Request[struct {
+				Users []luogu.UserSummary `json:"users"`
+			}]("GET", "https://www.luogu.com.cn/api/user/search?keyword="+username, nil)
+			if err != nil {
+				return err
+			}
+			if data.Users[0].Name == username {
+				uid = uint(data.Users[0].Uid)
+			} else {
+				return errors.New("用户未找到")
+			}
+		}
+		data, err := luogu.Request[luogu.DataResponse[luogu.UserData]]("GET", fmt.Sprintf("https://www.luogu.com.cn/user/%d", uid), nil)
 		if err != nil {
 			return
 		}
 
 		for _, info := range infoFlag {
 			switch info {
+			case "uid":
+				fmt.Println(data.CurrentData.User.Uid)
 			case "name":
 				fmt.Println(data.CurrentData.User.Name)
 			case "introduction":
@@ -61,6 +81,8 @@ to quickly create a Cobra application.`,
 					return err
 				}
 				fmt.Println(intro)
+			default:
+				return errors.New("未知用户信息：" + info)
 			}
 		}
 		return
@@ -70,18 +92,9 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(userCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// userCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	userCmd.PersistentFlags().UintP("uid", "u", 0, "User ID")
-	if err := userCmd.MarkPersistentFlagRequired("uid"); err != nil {
-		panic(err)
-	}
+	userCmd.PersistentFlags().Uint("uid", 0, "User ID")
+	userCmd.PersistentFlags().String("name", "", "Username")
+	userCmd.MarkFlagsMutuallyExclusive("uid", "name")
+	userCmd.MarkFlagsOneRequired("uid", "name")
 	userCmd.Flags().StringSlice("info", []string{"name"}, "")
 }
