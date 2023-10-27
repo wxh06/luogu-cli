@@ -33,11 +33,15 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		uid, err := cmd.Flags().GetInt("uid")
+		uid, err := cmd.Flags().GetUint("uid")
 		if err != nil {
 			panic(err)
 		}
 		style, err := cmd.Flags().GetString("style")
+		if err != nil {
+			panic(err)
+		}
+		infoFlag, err := cmd.Flags().GetStringSlice("info")
 		if err != nil {
 			panic(err)
 		}
@@ -47,12 +51,18 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		fmt.Println(data.CurrentData.User.Name)
-		introduction, err := data.CurrentData.User.RenderIntroduction(style)
-		if err != nil {
-			return
+		for _, info := range infoFlag {
+			switch info {
+			case "name":
+				fmt.Println(data.CurrentData.User.Name)
+			case "introduction":
+				intro, err := data.CurrentData.User.RenderIntroduction(style)
+				if err != nil {
+					return err
+				}
+				fmt.Println(intro)
+			}
 		}
-		fmt.Println(introduction)
 		return
 	},
 }
@@ -69,8 +79,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	userCmd.Flags().IntP("uid", "u", 0, "User ID")
-	if err := userCmd.MarkFlagRequired("uid"); err != nil {
+	userCmd.PersistentFlags().UintP("uid", "u", 0, "User ID")
+	if err := userCmd.MarkPersistentFlagRequired("uid"); err != nil {
 		panic(err)
 	}
+	userCmd.Flags().StringSlice("info", []string{"name"}, "")
 }
