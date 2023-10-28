@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package cmd_user
 
 import (
 	"context"
@@ -25,8 +25,8 @@ import (
 	"github.com/wxh06/luogu-cli/pkg/luogu"
 )
 
-// userCmd represents the user command
-var userCmd = &cobra.Command{
+// UserCmd represents the user command
+var UserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -98,11 +98,9 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(userCmd)
-
-	userCmd.PersistentFlags().Uint("uid", 0, "User ID")
-	userCmd.PersistentFlags().String("name", "", "Username")
-	userCmd.MarkFlagsMutuallyExclusive("uid", "name")
-	userCmd.MarkFlagsOneRequired("uid", "name")
-	userCmd.Flags().StringSlice("info", []string{"name"}, "")
+	UserCmd.PersistentFlags().Uint("uid", 0, "User ID")
+	UserCmd.PersistentFlags().String("name", "", "Username")
+	UserCmd.MarkFlagsMutuallyExclusive("uid", "name")
+	UserCmd.MarkFlagsOneRequired("uid", "name")
+	UserCmd.Flags().StringSlice("info", []string{"name"}, "")
 }

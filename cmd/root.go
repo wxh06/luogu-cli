@@ -21,6 +21,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/wxh06/luogu-cli/cmd/user"
 )
 
 var cfgFile string
@@ -52,16 +53,17 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	rootCmd.AddCommand(cmd_user.UserCmd)
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.luogu-cli.yaml)")
-	rootCmd.PersistentFlags().StringP("style", "s", "auto", "Glamour Markdown style")
-	err := rootCmd.RegisterFlagCompletionFunc("style", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	rootCmd.PersistentFlags().String("style", "auto", "Glamour Markdown style")
+	if err := rootCmd.RegisterFlagCompletionFunc("style", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"ascii", "auto", "dark", "dracula", "light", "notty", "pink"}, cobra.ShellCompDirectiveDefault
-	})
-	if err != nil {
+	}); err != nil {
 		panic(err)
 	}
 

@@ -1,8 +1,8 @@
-package luogu
+package markdown
 
 import "github.com/charmbracelet/glamour"
 
-func renderMarkdown(in string, style string) (string, error) {
+func Render(in string, style string) (string, error) {
 	if style != "" && style != "auto" {
 		return glamour.Render(in, style)
 	}
