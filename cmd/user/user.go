@@ -26,6 +26,8 @@ import (
 	"github.com/wxh06/luogu-cli/pkg/markdown"
 )
 
+type uidKey struct{}
+
 // UserCmd represents the user command
 var UserCmd = &cobra.Command{
 	Use:   "user",
@@ -57,11 +59,11 @@ to quickly create a Cobra application.`,
 				return errors.New("用户未找到")
 			}
 		}
-		cmd.SetContext(context.WithValue(cmd.Context(), "uid", uid))
+		cmd.SetContext(context.WithValue(cmd.Context(), uidKey{}, uid))
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		uid := cmd.Context().Value("uid").(uint)
+		uid := cmd.Context().Value(uidKey{}).(uint)
 		style, err := cmd.Flags().GetString("style")
 		if err != nil {
 			panic(err)
