@@ -23,6 +23,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/wxh06/luogu-cli/pkg/luogu"
+	"github.com/wxh06/luogu-cli/pkg/markdown"
 )
 
 // UserCmd represents the user command
@@ -82,7 +83,7 @@ to quickly create a Cobra application.`,
 			case "name":
 				fmt.Println(data.CurrentData.User.Name)
 			case "introduction":
-				intro, err := data.CurrentData.User.RenderIntroduction(style)
+				intro, err := markdown.Render(data.CurrentData.User.Introduction, style)
 				if err != nil {
 					return err
 				}

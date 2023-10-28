@@ -45,10 +45,6 @@ type UserDetails struct {
 	User
 }
 
-func (u UserDetails) RenderIntroduction(style string) (string, error) {
-	return renderMarkdown(u.Introduction, style)
-}
-
 type UserData struct {
 	User              UserDetails `json:"user"`
 	EloMax            struct{}    `json:"eloMax"`
