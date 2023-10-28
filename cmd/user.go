@@ -16,8 +16,10 @@ limitations under the License.
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/wxh06/luogu-cli/pkg/luogu"
@@ -33,7 +35,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	RunE: func(cmd *cobra.Command, args []string) (err error) {
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		uid, err := cmd.Flags().GetUint("uid")
 		if err != nil {
 			panic(err)
@@ -42,6 +44,25 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			panic(err)
 		}
+
+		if username != "" && uid == 0 {
+			data, err := luogu.Request[struct {
+				Users []luogu.UserSummary `json:"users"`
+			}]("GET", "https://www.luogu.com.cn/api/user/search?keyword="+username, nil)
+			if err != nil {
+				return err
+			}
+			if strings.EqualFold(data.Users[0].Name, username) {
+				uid = uint(data.Users[0].Uid)
+			} else {
+				return errors.New("用户未找到")
+			}
+		}
+		cmd.SetContext(context.WithValue(cmd.Context(), "uid", uid))
+		return nil
+	},
+	RunE: func(cmd *cobra.Command, args []string) (err error) {
+		uid := cmd.Context().Value("uid").(uint)
 		style, err := cmd.Flags().GetString("style")
 		if err != nil {
 			panic(err)
@@ -51,19 +72,6 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 
-		if uid == 0 {
-			data, err := luogu.Request[struct {
-				Users []luogu.UserSummary `json:"users"`
-			}]("GET", "https://www.luogu.com.cn/api/user/search?keyword="+username, nil)
-			if err != nil {
-				return err
-			}
-			if data.Users[0].Name == username {
-				uid = uint(data.Users[0].Uid)
-			} else {
-				return errors.New("用户未找到")
-			}
-		}
 		data, err := luogu.Request[luogu.DataResponse[luogu.UserData]]("GET", fmt.Sprintf("https://www.luogu.com.cn/user/%d", uid), nil)
 		if err != nil {
 			return
