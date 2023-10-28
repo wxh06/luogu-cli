@@ -8,18 +8,14 @@ import (
 )
 
 func Render(in string, style string) (string, error) {
-	if style != "" && style != "auto" {
-		return glamour.Render(in, style)
+	// 源码（无样式）
+	if style == "" {
+		return in, nil
 	}
 
-	if !term.IsTerminal(int(os.Stdout.Fd())) {
+	if style == "auto" && !term.IsTerminal(int(os.Stdout.Fd())) {
 		return glamour.Render(in, "notty")
 	}
 
-	// detect background color and pick either the default dark or light theme
-	r, err := glamour.NewTermRenderer(glamour.WithAutoStyle())
-	if err != nil {
-		return "", err
-	}
-	return r.Render(in)
+	return glamour.Render(in, style)
 }

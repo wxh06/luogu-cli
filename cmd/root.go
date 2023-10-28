@@ -62,14 +62,14 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.luogu-cli.yaml)")
 	rootCmd.PersistentFlags().String("style", "auto", "Glamour Markdown style")
 	if err := rootCmd.RegisterFlagCompletionFunc("style", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return []string{"ascii", "auto", "dark", "dracula", "light", "notty", "pink"}, cobra.ShellCompDirectiveDefault
+		return []string{"", "ascii", "auto", "dark", "dracula", "light", "notty", "pink"}, cobra.ShellCompDirectiveDefault
 	}); err != nil {
 		panic(err)
 	}
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
