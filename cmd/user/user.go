@@ -46,9 +46,7 @@ to quickly create a Cobra application.`,
 		}
 
 		if username != "" && uid == 0 {
-			data, err := luogu.Request[struct {
-				Users []luogu.UserSummary `json:"users"`
-			}]("GET", "https://www.luogu.com.cn/api/user/search?keyword="+username, nil)
+			data, err := luogu.SearchUser(username)
 			if err != nil {
 				return err
 			}
@@ -100,7 +98,24 @@ to quickly create a Cobra application.`,
 func init() {
 	UserCmd.PersistentFlags().Uint("uid", 0, "User ID")
 	UserCmd.PersistentFlags().String("name", "", "Username")
+	// 虽然洛谷只返回完全匹配的用户名，但还是写一下补全好了
+	if err := UserCmd.RegisterFlagCompletionFunc("name", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		var names []string
+		data, err := luogu.SearchUser(toComplete)
+		if err != nil {
+			return []string{}, cobra.ShellCompDirectiveError
+		}
+		for _, user := range data.Users {
+			if user.Name != "" {
+				names = append(names, user.Name)
+			}
+		}
+		return names, cobra.ShellCompDirectiveDefault
+	}); err != nil {
+		panic(err)
+	}
 	UserCmd.MarkFlagsMutuallyExclusive("uid", "name")
 	UserCmd.MarkFlagsOneRequired("uid", "name")
+
 	UserCmd.Flags().StringSlice("info", []string{"name"}, "")
 }
