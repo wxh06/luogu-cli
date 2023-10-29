@@ -53,7 +53,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.AddCommand(cmd_user.UserCmd)
+	rootCmd.AddCommand(usercmd.UserCmd)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
