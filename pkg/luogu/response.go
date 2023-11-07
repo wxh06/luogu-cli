@@ -52,16 +52,24 @@ type UserDetails struct {
 }
 
 type UserData struct {
-	User              UserDetails `json:"user"`
-	EloMax            struct{}    `json:"eloMax"`
-	PassedProblems    []struct{}  `json:"passedProblems"`
-	SubmittedProblems []struct{}  `json:"submittedProblems"`
+	User              UserDetails      `json:"user"`
+	EloMax            struct{}         `json:"eloMax"`
+	PassedProblems    []ProblemSummary `json:"passedProblems"`
+	SubmittedProblems []ProblemSummary `json:"submittedProblems"`
 }
 
 type TeamSummary struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
 	IsPremium bool   `json:"isPremium"`
+}
+
+type ProblemSummary struct {
+	Pid        string `json:"pid"`
+	Title      string `json:"title"`
+	Difficulty int    `json:"difficulty"`
+	FullScore  int    `json:"fullScore"`
+	Type       string `json:"type"`
 }
 
 type ContestSummary struct {
@@ -93,9 +101,9 @@ type ContestDetails[T map[string]any] struct {
 type ContestData[T map[string]any] struct {
 	Contest         ContestDetails[T] `json:"contest"`
 	ContestProblems []struct {
-		Score     int      `json:"score"`
-		Problem   struct{} `json:"problem"`
-		Submitted bool     `json:"submitted"`
+		Score     int            `json:"score"`
+		Problem   ProblemSummary `json:"problem"`
+		Submitted bool           `json:"submitted"`
 	} `json:"contestProblems"`
 	IsScoreboardFrozen bool     `json:"isScoreboardFrozen"`
 	AccessLevel        int      `json:"accessLevel"`
