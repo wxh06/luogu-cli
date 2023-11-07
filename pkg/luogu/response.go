@@ -12,6 +12,12 @@ type DataResponse[T any] struct {
 	CurrentUser     User   `json:"currentUser"`
 }
 
+type List[T any] struct {
+	Result  []T `json:"result"`
+	PerPage int `json:"perPage"`
+	Count   int `json:"count"`
+}
+
 type UserSummary struct {
 	Uid        int    `json:"uid"`
 	Name       string `json:"name"`
@@ -50,4 +56,66 @@ type UserData struct {
 	EloMax            struct{}    `json:"eloMax"`
 	PassedProblems    []struct{}  `json:"passedProblems"`
 	SubmittedProblems []struct{}  `json:"submittedProblems"`
+}
+
+type TeamSummary struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	IsPremium bool   `json:"isPremium"`
+}
+
+type ContestSummary struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	StartTime int    `json:"startTime"`
+	EndTime   int    `json:"endTime"`
+}
+
+type Contest[T map[string]any] struct {
+	RuleType           int  `json:"ruleType"`
+	VisibilityType     int  `json:"visibilityType"`
+	InvitationCodeType int  `json:"invitationCodeType"`
+	Rated              bool `json:"rated"`
+	EloThreshold       int  `json:"eloThreshold"`
+	Host               T    `json:"host"`
+	ProblemCount       int  `json:"problemCount"`
+	ContestSummary
+}
+
+type ContestDetails[T map[string]any] struct {
+	Description       string `json:"description"`
+	TotalParticipants int    `json:"totalParticipants"`
+	EloDone           bool   `json:"eloDone"`
+	CanEdit           bool   `json:"canEdit"`
+	Contest[T]
+}
+
+type ContestData[T map[string]any] struct {
+	Contest         ContestDetails[T] `json:"contest"`
+	ContestProblems []struct {
+		Score     int      `json:"score"`
+		Problem   struct{} `json:"problem"`
+		Submitted bool     `json:"submitted"`
+	} `json:"contestProblems"`
+	IsScoreboardFrozen bool     `json:"isScoreboardFrozen"`
+	AccessLevel        int      `json:"accessLevel"`
+	Joined             bool     `json:"joined"`
+	UserElo            struct{} `json:"userElo"`
+}
+
+type Score struct {
+	Details map[string]struct {
+		Score       int `json:"score"`
+		RunningTime int `json:"runningTime"`
+	} `json:"details"`
+	User        UserSummary `json:"user"`
+	Score       int         `json:"score"`
+	RunningTime int         `json:"runningTime"`
+}
+
+type GetScoreboardResponse struct {
+	Scoreboard    List[Score]    `json:"scoreboard"`
+	UserScore     Score          `json:"userScore"`
+	UserRank      int            `json:"userRank"`
+	FirstBloodUID map[string]int `json:"firstBloodUID"`
 }
