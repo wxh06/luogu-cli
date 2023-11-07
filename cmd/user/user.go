@@ -73,7 +73,7 @@ to quickly create a Cobra application.`,
 			panic(err)
 		}
 
-		data, err := luogu.Request[luogu.DataResponse[luogu.UserData]]("GET", fmt.Sprintf("https://www.luogu.com.cn/user/%d", uid), nil)
+		data, err := luogu.Get[luogu.DataResponse[luogu.UserData]](fmt.Sprintf("https://www.luogu.com.cn/user/%d", uid))
 		if err != nil {
 			return
 		}
