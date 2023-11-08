@@ -1,5 +1,7 @@
 package luogu
 
+import "encoding/json"
+
 // https://github.com/0f-0b/luogu-api-docs/blob/main/luogu-api.d.ts
 
 type DataResponse[T any] struct {
@@ -111,14 +113,16 @@ type ContestData[T map[string]any] struct {
 	UserElo            struct{} `json:"userElo"`
 }
 
+type ScoreDetails map[string]struct {
+	Score       int `json:"score"`
+	RunningTime int `json:"runningTime"`
+}
+
 type Score struct {
-	Details map[string]struct {
-		Score       int `json:"score"`
-		RunningTime int `json:"runningTime"`
-	} `json:"details"`
-	User        UserSummary `json:"user"`
-	Score       int         `json:"score"`
-	RunningTime int         `json:"runningTime"`
+	Details     json.RawMessage `json:"details"`
+	User        UserSummary     `json:"user"`
+	Score       int             `json:"score"`
+	RunningTime int             `json:"runningTime"`
 }
 
 type GetScoreboardResponse struct {
