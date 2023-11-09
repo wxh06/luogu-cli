@@ -81,27 +81,27 @@ type ContestSummary struct {
 	EndTime   int    `json:"endTime"`
 }
 
-type Contest[T map[string]any] struct {
-	RuleType           int  `json:"ruleType"`
-	VisibilityType     int  `json:"visibilityType"`
-	InvitationCodeType int  `json:"invitationCodeType"`
-	Rated              bool `json:"rated"`
-	EloThreshold       int  `json:"eloThreshold"`
-	Host               T    `json:"host"`
-	ProblemCount       int  `json:"problemCount"`
+type Contest struct {
+	RuleType           int             `json:"ruleType"`
+	VisibilityType     int             `json:"visibilityType"`
+	InvitationCodeType int             `json:"invitationCodeType"`
+	Rated              bool            `json:"rated"`
+	EloThreshold       int             `json:"eloThreshold"`
+	Host               json.RawMessage `json:"host"` // UserSummary | TeamSummary
+	ProblemCount       int             `json:"problemCount"`
 	ContestSummary
 }
 
-type ContestDetails[T map[string]any] struct {
+type ContestDetails struct {
 	Description       string `json:"description"`
 	TotalParticipants int    `json:"totalParticipants"`
 	EloDone           bool   `json:"eloDone"`
 	CanEdit           bool   `json:"canEdit"`
-	Contest[T]
+	Contest
 }
 
-type ContestData[T map[string]any] struct {
-	Contest         ContestDetails[T] `json:"contest"`
+type ContestData struct {
+	Contest         ContestDetails `json:"contest"`
 	ContestProblems []struct {
 		Score     int            `json:"score"`
 		Problem   ProblemSummary `json:"problem"`
